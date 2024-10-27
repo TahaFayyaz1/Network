@@ -1,0 +1,5 @@
+/network/migrations
+/network/__pycache__
+/project4/__pycache__
+db.sqlite3
+.prettierignore
