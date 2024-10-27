@@ -4,22 +4,20 @@
 
 {% block body %}
 
-
 {% if user.is_authenticated %}
-<button class="btn btn-dark" id="newpost_button">Create New Post</button>
+<button class="btn btn-dark" id="newpost-button">Create New Post</button>
 {% endif %}
-
-
-<div id="index_div"></div>
-
-
-<div class="input-group mb-3" id="newpost_div">
+<div class="input-group mb-3" id="newpost-div">
     <form action="{% url 'index' %}" method="post">
         {% csrf_token %}
         {{newpost_form}}
         <input class="btn btn-dark" type="submit" value="Post">
     </form>
 </div>
+
+
+{% include "network/postslayout.html" with posts=posts %}
+
 
 {% endblock %}
 

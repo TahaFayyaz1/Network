@@ -1,0 +1,27 @@
+{% extends "network/layout.html" %}{% load static %}
+
+{% block body %}
+
+<div id="profile-div">
+    <h2 class="display-4">{{user.username}}</h2>
+    <span><strong>Follower: </strong>{{num_of_followers}}</span>
+    <span><strong>Following: </strong>{{num_of_following}}</span>
+    <br>
+    {% if user.is_authenticated and request.user != user %}
+        <form method="post">
+            {% csrf_token %}
+            {{following_form}}
+            {%if not does_user_follow %}
+                <input class="btn btn-dark" type="submit" value="Follow">
+            {% else %}
+                <input class="btn btn-dark" type="submit" value="Unfollow">
+            {% endif %}
+            <input type="hidden" name="following_user" value="{{user.username}}">
+        </form>
+    {% endif %}
+</div>
+
+{% include "network/postslayout.html" with posts=posts %}
+
+
+{% endblock %}

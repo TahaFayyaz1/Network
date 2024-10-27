@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post
+from .models import Post, Following
 
 
 class PostForm(forms.ModelForm):
@@ -13,3 +13,9 @@ class PostForm(forms.ModelForm):
     class Meta:
         model = Post
         fields = ["description"]
+
+
+class FollowingForm(forms.ModelForm):
+    class Meta:
+        model = Following
+        fields = []
