@@ -7,6 +7,7 @@ from .forms import PostForm, FollowingForm
 from .models import User, Post, Following
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -22,6 +23,7 @@ def index(request):
             post.save()
 
     posts = Post.objects.all().order_by("-id")
+    posts = paginator_functionality(posts, request)
 
     return render(
         request,
@@ -35,7 +37,10 @@ def user(request, userid):
         user = User.objects.get(username=userid)
     except User.DoesNotExist:
         return HttpResponse("<h1>User Does Not Exist</h1>")
+
     posts = Post.objects.filter(user=user.id).order_by("-id")
+    posts = paginator_functionality(posts, request)
+
     num_of_followers = len(Following.objects.filter(following=user, follow=True))
     num_of_following = len(Following.objects.filter(user=user, follow=True))
 
@@ -81,12 +86,19 @@ def following(request):
         list_of_followers.append(follower.following)
 
     posts = Post.objects.filter(user__in=list_of_followers).order_by("-id")
+    posts = paginator_functionality(posts, request)
 
     return render(
         request,
         "network/index.html",
         {"newpost_form": PostForm(), "posts": posts},
     )
+
+
+def paginator_functionality(posts, request):
+    paginator = Paginator(posts, 2)
+    page_number = request.GET.get("page")
+    return paginator.get_page(page_number)
 
 
 def login_view(request):
