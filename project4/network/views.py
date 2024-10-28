@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from .forms import PostForm, FollowingForm
@@ -31,7 +31,10 @@ def index(request):
 
 
 def user(request, userid):
-    user = User.objects.get(username=userid)
+    try:
+        user = User.objects.get(username=userid)
+    except User.DoesNotExist:
+        return HttpResponse("<h1>User Does Not Exist</h1>")
     posts = Post.objects.filter(user=user.id).order_by("-id")
     num_of_followers = len(Following.objects.filter(following=user, follow=True))
     num_of_following = len(Following.objects.filter(user=user, follow=True))
@@ -67,6 +70,22 @@ def user(request, userid):
             "following_form": FollowingForm(),
             "does_user_follow": does_user_follow,
         },
+    )
+
+
+@login_required
+def following(request):
+    followers = Following.objects.filter(user=request.user, follow=True)
+    list_of_followers = []
+    for follower in followers:
+        list_of_followers.append(follower.following)
+
+    posts = Post.objects.filter(user__in=list_of_followers).order_by("-id")
+
+    return render(
+        request,
+        "network/index.html",
+        {"newpost_form": PostForm(), "posts": posts},
     )
 
 
