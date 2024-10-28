@@ -8,6 +8,8 @@ from .models import User, Post, Following
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def index(request):
@@ -33,10 +35,12 @@ def index(request):
 
 
 def user(request, userid):
+    # anonymus user
+    print(request.user)
     try:
         user = User.objects.get(username=userid)
     except User.DoesNotExist:
-        return HttpResponse("<h1>User Does Not Exist</h1>")
+        return HttpResponse("<h1>Error: Page Does Not Exist</h1>")
 
     posts = Post.objects.filter(user=user.id).order_by("-id")
     posts = paginator_functionality(posts, request)
@@ -48,7 +52,7 @@ def user(request, userid):
         does_user_follow = Following.objects.get(
             user=request.user, following=user
         ).follow
-    except Following.DoesNotExist:
+    except (Following.DoesNotExist, TypeError, ValueError):
         does_user_follow = False
         f = Following(user=request.user, following=user)
         f.save()
@@ -95,8 +99,21 @@ def following(request):
     )
 
 
+@csrf_exempt
+def edit_post(request, postid):
+    post = Post.objects.get(pk=postid)
+    if request.method == "GET":
+        return JsonResponse({"description": post.description})
+
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        post.description = data["description"]
+        post.save()
+        return HttpResponse(status=204)
+
+
 def paginator_functionality(posts, request):
-    paginator = Paginator(posts, 2)
+    paginator = Paginator(posts, 10)
     page_number = request.GET.get("page")
     return paginator.get_page(page_number)
 
