@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("#edit-button").forEach((button) => {
     button.onclick = () => {
+      window.scrollTo(0, 0);
       history.pushState({}, "", "editpost");
       fetch(`/edit/${button.value}`)
         .then((response) => response.json())
@@ -19,8 +20,8 @@ document.addEventListener("DOMContentLoaded", () => {
           const submitbutton = document.createElement("button");
           editarea.innerHTML = data.description;
           submitbutton.innerHTML = "Save Changes";
-          editarea.className = "form-control";
-          submitbutton.className = "btn btn-outline-dark";
+          editarea.className = "form-control mt-4";
+          submitbutton.className = "btn btn-outline-dark mt-3";
           document.getElementById("edit-div").append(editarea);
           document.getElementById("edit-div").append(submitbutton);
 

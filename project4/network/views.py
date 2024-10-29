@@ -9,8 +9,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
-from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.core import serializers
+from django.views.decorators.csrf import csrf_protect
 
 
 def index(request):
@@ -36,7 +35,6 @@ def index(request):
 
 
 def user(request, userid):
-    # anonymus user
     try:
         user = User.objects.get(username=userid)
     except User.DoesNotExist:
@@ -48,14 +46,17 @@ def user(request, userid):
     num_of_followers = len(Following.objects.filter(following=user, follow=True))
     num_of_following = len(Following.objects.filter(user=user, follow=True))
 
-    try:
-        does_user_follow = Following.objects.get(
-            user=request.user, following=user
-        ).follow
-    except (Following.DoesNotExist, TypeError, ValueError):
+    if request.user.is_authenticated:
+        try:
+            does_user_follow = Following.objects.get(
+                user=request.user, following=user
+            ).follow
+        except (Following.DoesNotExist, TypeError, ValueError):
+            does_user_follow = False
+            f = Following(user=request.user, following=user)
+            f.save()
+    else:
         does_user_follow = False
-        f = Following(user=request.user, following=user)
-        f.save()
 
     if request.method == "POST":
         following_form = FollowingForm(request.POST)

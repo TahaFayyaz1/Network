@@ -12,9 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         for (let i = 0; i < data.length; i++) {
           if (button.dataset.user == data[i].user_id) {
-            button.innerHTML = "Unlike";
+            button.innerHTML = "🩷";
           } else {
-            button.innerHTML = "Like";
+            button.innerHTML = "♡";
           }
         }
         button.onclick = () => {
@@ -22,12 +22,12 @@ document.addEventListener("DOMContentLoaded", () => {
           likep = document.querySelector(
             `#post-likes-${button.dataset.postid}`
           );
-          if (button.innerHTML === "Like") {
-            button.innerHTML = "Unlike";
+          if (button.innerHTML === "♡") {
+            button.innerHTML = "🩷";
             does_user_like = true;
             likep.innerHTML = Number(likep.innerHTML) + 1;
           } else {
-            button.innerHTML = "Like";
+            button.innerHTML = "♡";
             does_user_like = false;
             likep.innerHTML = Number(likep.innerHTML) - 1;
           }

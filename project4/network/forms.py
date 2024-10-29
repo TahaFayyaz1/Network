@@ -5,7 +5,7 @@ from .models import Post, Following
 class PostForm(forms.ModelForm):
     description = forms.CharField(
         widget=forms.Textarea(
-            attrs={"class": "form-control", "placeholder": "Add Post..."}
+            attrs={"class": "form-control ml-3 mr-3", "placeholder": "Add Post..."}
         ),
         label="",
     )

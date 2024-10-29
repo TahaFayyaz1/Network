@@ -1,35 +1,15 @@
-#newpost-button {
-  position: relative;
-  float: right;
-}
-
-#post-div {
-  border-style: solid;
-  border-width: thin;
-  border-color: lightgray;
-  margin: 30px 15px;
-  /* padding: 15px; */
-}
-
-#post-heading {
-  padding: 10px 15px;
-}
-
-#edit-button,
-#like-button {
-  margin: 4px 15px;
-}
-
-#post-div > p {
-  margin: 0;
-}
-
-#post-information,
-#post-information + p {
+#post-datetime-info {
   color: grey;
   font-weight: lighter;
   font-size: small;
-  padding: 0px 0px 5px 15px;
+}
+
+#post-likes-info {
+  font-family: Tahoma, Arial;
+}
+
+#edit-button {
+  padding: 0px;
 }
 
 body {
@@ -38,12 +18,4 @@ body {
 
 #profile-div {
   text-align: center;
-}
-
-#profile-div > span {
-  padding: 20px;
-}
-
-#profile-div > h2 {
-  padding: 10px;
 }
