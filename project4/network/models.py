@@ -10,7 +10,14 @@ class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     description = models.TextField()
     post_datetime = models.DateTimeField()
-    likes = models.IntegerField(default=0)
+
+
+class Likes(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ["user", "post"]
 
 
 class Following(models.Model):

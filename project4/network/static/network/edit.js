@@ -5,21 +5,30 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch(`/edit/${button.value}`)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data);
-          document.querySelector("#posts-div").style.display = "none";
-          document.querySelector("#newpost-button").style.display = "none";
+          const edit_div = document.querySelector("#edit-div");
+          edit_div.style.display = "none";
+          while (edit_div.firstChild) {
+            document
+              .querySelector("#edit-div")
+              .removeChild(edit_div.firstChild);
+          }
           document.querySelector("#edit-div").style.display = "block";
+          document.querySelector("#newpost-button").disabled = true;
 
           const editarea = document.createElement("textarea");
           const submitbutton = document.createElement("button");
           editarea.innerHTML = data.description;
-          submitbutton.innerHTML = "Edit";
-          document.getElementById("edit-div").appendChild(editarea);
-          document.getElementById("edit-div").appendChild(submitbutton);
+          submitbutton.innerHTML = "Save Changes";
+          editarea.className = "form-control";
+          submitbutton.className = "btn btn-outline-dark";
+          document.getElementById("edit-div").append(editarea);
+          document.getElementById("edit-div").append(submitbutton);
 
           submitbutton.onclick = () => {
             fetch(`/edit/${button.value}`, {
               method: "PUT",
+              headers: { "X-CSRFToken": getCookie("csrftoken") },
+              mode: "same-origin",
               body: JSON.stringify({
                 description: editarea.value,
               }),
@@ -34,9 +43,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 .querySelector("#edit-div")
                 .removeChild(edit_div.firstChild);
             }
-            document.querySelector("#newpost-div").style.display = "none";
-            document.querySelector("#newpost-button").style.display = "block";
             document.querySelector("#newpost-button").disabled = false;
+
             return false;
           };
         });

@@ -4,12 +4,13 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from .forms import PostForm, FollowingForm
-from .models import User, Post, Following
+from .models import User, Post, Following, Likes
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 import json
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.core import serializers
 
 
 def index(request):
@@ -36,7 +37,6 @@ def index(request):
 
 def user(request, userid):
     # anonymus user
-    print(request.user)
     try:
         user = User.objects.get(username=userid)
     except User.DoesNotExist:
@@ -78,6 +78,7 @@ def user(request, userid):
             "posts": posts,
             "following_form": FollowingForm(),
             "does_user_follow": does_user_follow,
+            "newpost_form": PostForm(),
         },
     )
 
@@ -99,7 +100,7 @@ def following(request):
     )
 
 
-@csrf_exempt
+@csrf_protect
 def edit_post(request, postid):
     post = Post.objects.get(pk=postid)
     if request.method == "GET":
@@ -109,6 +110,24 @@ def edit_post(request, postid):
         data = json.loads(request.body)
         post.description = data["description"]
         post.save()
+        return HttpResponse(status=204)
+
+
+@csrf_protect
+def likes(request, postid):
+    post = Post.objects.get(pk=postid)
+    likes = Likes.objects.filter(post=post)
+    if request.method == "GET":
+        likes = list(likes.values())
+        return JsonResponse(likes, safe=False)
+
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        if data["does_user_like"] == True:
+            f = Likes(post=post, user=request.user)
+            f.save()
+        elif data["does_user_like"] == False:
+            Likes.objects.get(post=post, user=request.user).delete()
         return HttpResponse(status=204)
 
 

@@ -1,20 +1,22 @@
 {% load static %}
-{% block script %}<script src="{% static 'network/edit.js' %}"></script>{% endblock %}
+<script src="{% static 'network/edit.js' %}"></script>
+<script src="{% static 'network/likes.js' %}"></script>
 
+<div id="edit-div"></div>
 
 <div id="posts-div">
     {% for post in posts %}
         <div id="post-div">
-            <a href="{% url 'user' post.user %}" class="lead" id="post-heading">{{post.user}}</a><br>
-            {% if request.user == post.user %}
-                <button class="btn btn-outline-dark btn-sm" value="{{post.id}}" id="edit-button">Edit</button>
-            {% endif %}
-            <p id="post-{{post.id}}" style="padding: 0px 15px;">{{post.description}}</p>
-            <p id="extrainfo-post">{{post.post_datetime}}<br>{{post.likes}}</p>
+            <div id="post-heading"><a href="{% url 'user' post.user %}" class="lead" >{{post.user}}</a></div>
+            {% if request.user == post.user %}<button class="btn btn-outline-dark btn-sm" value="{{post.id}}" id="edit-button">Edit</button>{% endif %}
+            <button class="btn btn-outline-dark btn-sm" data-user="{{request.user.id}}"  data-postid="{{post.id}}" id="like-button">Like</button>
+            <p id="post-{{post.id}}" style="padding: 8px 15px;">{{post.description}}</p>
+            <p id="post-information">{{post.post_datetime}}</p>
+            <p class="post-likes" id="post-likes-{{post.id}}" data-id="{{post.id}}"></p>
         </div>
     {% endfor %}
 
-    <nav aria-label="Page navigation example" id="">
+    <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             {% if posts.has_previous %}
                 <li class="page-item">
@@ -37,6 +39,6 @@
         </ul>
     </nav>
 </div>
-<div id="edit-div"></div>
+
 
 

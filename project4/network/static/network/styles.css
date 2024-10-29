@@ -12,10 +12,11 @@
 }
 
 #post-heading {
-  padding: 8px 15px;
+  padding: 10px 15px;
 }
 
-#edit-button {
+#edit-button,
+#like-button {
   margin: 4px 15px;
 }
 
@@ -23,11 +24,12 @@
   margin: 0;
 }
 
-#extrainfo-post {
+#post-information,
+#post-information + p {
   color: grey;
   font-weight: lighter;
   font-size: small;
-  padding: 5px 15px;
+  padding: 0px 0px 5px 15px;
 }
 
 body {
